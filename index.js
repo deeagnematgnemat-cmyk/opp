@@ -10,10 +10,8 @@ const { say } = cfonts;
 import chalk from 'chalk';
 import pino from 'pino';
 import fs from 'fs';
-import boxen from 'boxen';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import readline from 'readline';
 
 // ────────────────[المحركات والملفات الرئيسية]────────────────
 import cfg from './config.js';
@@ -24,12 +22,6 @@ const __dirname = path.dirname(__filename);
 
 let reconnectCount = 0;
 const MAX_RECONNECT = 10;
-
-// ────────────────[مساعد الإقتران]────────────────
-const question = (text) => {
-    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-    return new Promise((resolve) => rl.question(text, (ans) => { rl.close(); resolve(ans); }));
-};
 
 // ────────────────[عرض شعار البوت]────────────────
 say(cfg.botLogo || 'ALPHA X', {
@@ -53,21 +45,6 @@ async function Go() {
         logger: pino({ level: 'silent' }),
         syncFullHistory: false,
     });
-
-    // ────────────────[اعدادات كود الإقتران]────────────────
-    if (!sock.authState.creds.registered) {
-        const phoneNumber = await question(chalk.blueBright('Your Number Phone: '));
-        const code = await sock.requestPairingCode(phoneNumber.trim());
-        console.log(
-            boxen(chalk.magentaBright(`Your Pairing Code: ${code}`), {
-                padding: 1,
-                margin: 1,
-                borderStyle: 'round',
-                borderColor: 'magenta',
-                backgroundColor: '#1a1a1a'
-            })
-        );
-    }
 
     // ────────────────[الجلسة تحديث]────────────────
     sock.ev.on('creds.update', saveCreds);
