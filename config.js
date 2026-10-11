@@ -1,4 +1,4 @@
-Export default {
+export default {
   // ────────────────[معلومات المطور]────────────────
     ownerName: 'Eren',
     ownerNumber: '962796163926@s.whatsapp.net',
